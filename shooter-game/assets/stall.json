@@ -1,0 +1,116 @@
+{
+  "images": [
+    {
+      "name": "bg_blue.png",
+      "x": 0,
+      "y": 82,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "name": "bg_green.png",
+      "x": 258,
+      "y": 258,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "name": "bg_red.png",
+      "x": 0,
+      "y": 340,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "name": "bg_wood.png",
+      "x": 258,
+      "y": 0,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "name": "cloud1.png",
+      "x": 403,
+      "y": 516,
+      "width": 134,
+      "height": 82
+    },
+    {
+      "name": "cloud2.png",
+      "x": 0,
+      "y": 663,
+      "width": 141,
+      "height": 84
+    },
+    {
+      "name": "curtain.png",
+      "x": 650,
+      "y": 0,
+      "width": 131,
+      "height": 426
+    },
+    {
+      "name": "curtain_rope.png",
+      "x": 0,
+      "y": 762,
+      "width": 40,
+      "height": 21
+    },
+    {
+      "name": "curtain_straight.png",
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 80
+    },
+    {
+      "name": "curtain_top.png",
+      "x": 0,
+      "y": 598,
+      "width": 200,
+      "height": 63
+    },
+    {
+      "name": "grass1.png",
+      "x": 403,
+      "y": 600,
+      "width": 132,
+      "height": 200
+    },
+    {
+      "name": "grass2.png",
+      "x": 516,
+      "y": 0,
+      "width": 132,
+      "height": 216
+    },
+    {
+      "name": "tree_oak.png",
+      "x": 258,
+      "y": 516,
+      "width": 143,
+      "height": 244
+    },
+    {
+      "name": "tree_pine.png",
+      "x": 673,
+      "y": 428,
+      "width": 119,
+      "height": 255
+    },
+    {
+      "name": "water1.png",
+      "x": 516,
+      "y": 218,
+      "width": 132,
+      "height": 224
+    },
+    {
+      "name": "water2.png",
+      "x": 539,
+      "y": 444,
+      "width": 132,
+      "height": 223
+    }
+  ]
+}
