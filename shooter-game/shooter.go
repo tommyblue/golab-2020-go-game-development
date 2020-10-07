@@ -17,6 +17,7 @@ func (g *Game) Update(screen *ebiten.Image) error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	g.drawBackground(screen)
 }
 
 func (g *Game) Layout(w, h int) (int, int) {
