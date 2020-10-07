@@ -1,4 +1,4 @@
-package shooter
+package utils
 
 import (
 	"image"
@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-func getImage(name string, obj *assets.Object) (*ebiten.Image, error) {
+func GetImage(name string, obj *assets.Object) (*ebiten.Image, error) {
 	var rect image.Rectangle
 	for _, img := range obj.Specs.Images {
 		if img.Name == name {
