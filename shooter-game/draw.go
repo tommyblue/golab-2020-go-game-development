@@ -32,3 +32,42 @@ func (g *Game) drawBackground(screen *ebiten.Image) {
 		}
 	}
 }
+
+func (g *Game) drawCurtains(screen *ebiten.Image) {
+	name := "curtain.png"
+	img, err := getImage(name, assets.Stall)
+	if err != nil {
+		log.Fatalf("drawing %s: %v", name, err)
+	}
+
+	op := &ebiten.DrawImageOptions{}
+	// move a bit down
+	op.GeoM.Translate(0, 60)
+	screen.DrawImage(img, op)
+
+	screenW, _ := screen.Size()
+	curtainW, _ := img.Size()
+	op = &ebiten.DrawImageOptions{}
+	// flip curtain and move to the right the size of the image
+	op.GeoM.Scale(-1, 1)
+	op.GeoM.Translate(float64(curtainW), 0)
+	// then move to the right of the screen
+	op.GeoM.Translate(float64(screenW-curtainW), 0)
+	op.GeoM.Translate(0, 60)
+	screen.DrawImage(img, op)
+
+	name = "curtain_straight.png"
+	topImg, err := getImage(name, assets.Stall)
+	if err != nil {
+		log.Fatalf("drawing %s: %v", name, err)
+	}
+	topImgW, _ := topImg.Size()
+	x := int(math.Ceil(float64(screenW) / float64(topImgW)))
+	for i := 0; i < x; i++ {
+		tx := i * topImgW
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(tx), 0)
+		screen.DrawImage(topImg, op)
+	}
+
+}
