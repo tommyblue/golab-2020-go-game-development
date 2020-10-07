@@ -48,7 +48,7 @@ func NewGame() *Game {
 	ebiten.SetWindowTitle("Shooter")
 	g := &Game{
 		objects: []objects.Object{
-			objects.NewBackground("bg_wood.png"),
+			objects.NewBackground("bg_green.png"),
 			objects.NewCurtains("curtain_straight.png", "curtain.png"),
 		},
 	}
