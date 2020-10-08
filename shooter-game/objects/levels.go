@@ -25,8 +25,8 @@ type level1 struct {
 func NewLevel1(img string) Object {
 	return &level1{
 		name:       img,
-		xDirection: 1,
-		yDirection: 1,
+		xDirection: right,
+		yDirection: down,
 		xSpeed:     1,
 		ySpeed:     0.35,
 		maxOffsetX: 100,
@@ -37,16 +37,16 @@ func NewLevel1(img string) Object {
 func (l *level1) Tick(tick uint) {
 	l.tick = tick
 	if l.offsetX >= l.maxOffsetX {
-		l.xDirection = -1
+		l.xDirection = left
 	} else if l.offsetX <= 0 {
-		l.xDirection = 1
+		l.xDirection = right
 	}
 	l.offsetX = l.offsetX + l.xDirection*l.xSpeed
 
 	if l.offsetY >= l.maxOffsetY {
-		l.yDirection = -1
+		l.yDirection = up
 	} else if l.offsetY <= 0 {
-		l.yDirection = 1
+		l.yDirection = down
 	}
 	l.offsetY = l.offsetY + l.yDirection*l.ySpeed
 }
