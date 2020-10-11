@@ -20,6 +20,7 @@ var (
 )
 
 type Object struct {
+	Name  string
 	Image *ebiten.Image
 	Specs *SpriteSheet
 }
@@ -37,14 +38,17 @@ type ImageSpec struct {
 
 func init() {
 	Hud = &Object{
+		Name:  "HUD",
 		Image: newImage(hudBytes),
 		Specs: buildSpecs(relativePath("./hud.json")),
 	}
 	Objects = &Object{
+		Name:  "Objects",
 		Image: newImage(objectsBytes),
 		Specs: buildSpecs(relativePath("./objects.json")),
 	}
 	Stall = &Object{
+		Name:  "Stall",
 		Image: newImage(stallBytes),
 		Specs: buildSpecs(relativePath("./stall.json")),
 	}
