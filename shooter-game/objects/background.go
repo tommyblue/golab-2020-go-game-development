@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"fmt"
+	"log"
 	"math"
 
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/assets"
@@ -10,37 +10,41 @@ import (
 )
 
 type background struct {
-	name string
+	img *ebiten.Image
+	w   int
+	h   int
 }
 
-func NewBackground(img string) Object {
+func NewBackground(imgName string) Object {
+	img, err := utils.GetImage(imgName, assets.Stall)
+	if err != nil {
+		log.Fatalf("drawing %s: %v", imgName, err)
+	}
+	w, h := img.Size()
+
 	return &background{
-		name: img,
+		img: img,
+		w:   w,
+		h:   h,
 	}
 }
 
 func (b *background) Update(_ *ebiten.Image, tick uint) {}
 
 func (b *background) Draw(trgt *ebiten.Image) error {
-	img, err := utils.GetImage(b.name, assets.Stall)
-	if err != nil {
-		return fmt.Errorf("drawing %s: %v", b.name, err)
-	}
-
 	// as the background is smaller than the trgt, it must be
 	// drawn multiple times. Let's calculate the numbers
 	trgtW, trgtH := trgt.Size()
-	bgW, bgH := img.Size()
-	x := int(math.Ceil(float64(trgtW) / float64(bgW)))
-	y := int(math.Ceil(float64(trgtH) / float64(bgH)))
+	x := int(math.Ceil(float64(trgtW) / float64(b.w)))
+	y := int(math.Ceil(float64(trgtH) / float64(b.h)))
 
 	for i := 0; i < x; i++ {
 		for j := 0; j < y; j++ {
 			op := &ebiten.DrawImageOptions{}
-			tx := i * bgW
-			ty := j * bgH
+			tx := i * b.w
+			ty := j * b.h
 			op.GeoM.Translate(float64(tx), float64(ty))
-			trgt.DrawImage(img, op)
+			trgt.DrawImage(b.img, op)
 		}
 	}
 
