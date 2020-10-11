@@ -20,7 +20,7 @@ func NewDesk(img string) Object {
 	}
 }
 
-func (d *desk) Tick(_ *ebiten.Image, _ uint) {}
+func (d *desk) Update(_ *ebiten.Image, _ uint) {}
 
 func (d *desk) Draw(trgt *ebiten.Image) error {
 	trgtW, trgtH := trgt.Size()

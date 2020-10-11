@@ -19,7 +19,7 @@ func NewBackground(img string) Object {
 	}
 }
 
-func (b *background) Tick(_ *ebiten.Image, tick uint) {}
+func (b *background) Update(_ *ebiten.Image, tick uint) {}
 
 func (b *background) Draw(trgt *ebiten.Image) error {
 	img, err := utils.GetImage(b.name, assets.Stall)

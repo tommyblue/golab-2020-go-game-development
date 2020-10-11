@@ -46,7 +46,7 @@ func NewLevel1(imgName string, maxDucks int) Object {
 	}
 }
 
-func (l *level1) Tick(trgt *ebiten.Image, tick uint) {
+func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	// if the current number of ducks is below the expected number, maybe generate one
 	if len(l.ducks) < l.maxDucks {
 		// every second there's 30% possibilities to

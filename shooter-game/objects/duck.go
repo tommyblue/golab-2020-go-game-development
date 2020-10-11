@@ -44,7 +44,7 @@ func newDuck(initialOffsetY int) *duck {
 	}
 }
 
-func (d *duck) Tick(screen *ebiten.Image, _ uint) {
+func (d *duck) Update(screen *ebiten.Image, _ uint) {
 	// horizontal movement
 	d.offsetX = d.offsetX + ducksXSpeed
 

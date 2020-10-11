@@ -3,9 +3,9 @@ package objects
 import "github.com/hajimehoshi/ebiten"
 
 type Object interface {
-	Tick(*ebiten.Image, uint) // tell the object a new tick happened
-	Draw(*ebiten.Image) error // draw the object
 	OnScreen() bool           // false when the object is out of the screen
+	Update(*ebiten.Image, uint) // tell the object a new tick happened
+	Draw(*ebiten.Image) error   // draw the object
 }
 
 type direction int // use custom type for direction, so we can add methods to it
