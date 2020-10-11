@@ -11,15 +11,16 @@ import (
 )
 
 type level1 struct {
-	img        *ebiten.Image // level image (water waves)
-	imgW       int           // width of the image
-	imgH       int           // height of the image
-	offsetX    float64       // horizontal offset, used to animate the image
-	offsetY    float64       // vertical offset, used to animate the image
-	xDirection direction     // horizontal direction of the animation
-	yDirection direction     // vertical direction of the animation
-	ducks      []*duck       // current number of ducks in the screen
-	maxDucks   int           // max number of ducks in the screen
+	img         *ebiten.Image // level image (water waves)
+	imgW        int           // width of the image
+	imgH        int           // height of the image
+	offsetX     float64       // horizontal offset, used to animate the image
+	offsetY     float64       // vertical offset, used to animate the image
+	xDirection  direction     // horizontal direction of the animation
+	yDirection  direction     // vertical direction of the animation
+	ducks       []*duck       // current number of ducks in the screen
+	maxDucks    int           // max number of ducks in the screen
+	duckImgName string        // the name of the duck img
 }
 
 const (
@@ -29,7 +30,7 @@ const (
 	lvl1MaxOffsetY = 16   // max vertical movement
 )
 
-func NewLevel1(imgName string, maxDucks int) Object {
+func NewLevel1(imgName, duckImgName string, maxDucks int) Object {
 	img, err := utils.GetImage(imgName, assets.Stall)
 	if err != nil {
 		log.Fatalf("cannot get image %s: %v", imgName, err)
@@ -37,12 +38,13 @@ func NewLevel1(imgName string, maxDucks int) Object {
 	w, h := img.Size()
 
 	return &level1{
-		img:        img,
-		imgW:       w,
-		imgH:       h,
-		xDirection: right,
-		yDirection: down,
-		maxDucks:   maxDucks,
+		img:         img,
+		imgW:        w,
+		imgH:        h,
+		xDirection:  right,
+		yDirection:  down,
+		maxDucks:    maxDucks,
+		duckImgName: duckImgName,
 	}
 }
 
@@ -52,7 +54,7 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 		// every second there's 30% possibilities to
 		// generate a missing duck
 		if tick%60 == 0 && rand.Float64() < 0.3 {
-			l.ducks = append(l.ducks, newDuck(l.imgH+50))
+			l.ducks = append(l.ducks, newDuck(l.duckImgName, l.imgH+50))
 		}
 	}
 
@@ -64,7 +66,7 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	// https://github.com/golang/go/wiki/SliceTricks#filter-in-place
 	n := 0
 	for _, d := range l.ducks {
-		d.Tick(trgt, tick)
+		d.Update(trgt, tick)
 		if d.onScreen {
 			l.ducks[n] = d
 			n++

@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	duckName        = "duck_outline_target_white.png"
 	ducksXSpeed     = 1.5 // horizontal speed
 	ducksYSpeed     = 0.6 // vertical speed
 	ducksMaxOffsetY = 16  // max vertical movement for animation
@@ -18,6 +17,8 @@ const (
 
 type duck struct {
 	img            *ebiten.Image
+	h              int
+	w              int
 	offsetX        float64   // horizontal position
 	offsetY        float64   // vertical position
 	initialOffsetY float64   // initial vertical position. set by the caller
@@ -26,16 +27,18 @@ type duck struct {
 }
 
 // newDuck generates a new duck with an initial vertical position
-func newDuck(initialOffsetY int) *duck {
-	img, err := utils.GetImage(duckName, assets.Objects)
+func newDuck(duckImgName string, initialOffsetY int) *duck {
+	img, err := utils.GetImage(duckImgName, assets.Objects)
 	if err != nil {
-		log.Fatalf("drawing %s: %v", duckName, err)
+		log.Fatalf("drawing %s: %v", duckImgName, err)
 	}
 
-	w, _ := img.Size()
+	w, h := img.Size()
 
 	return &duck{
 		img:            img,
+		w:              w,
+		h:              h,
 		initialOffsetY: float64(initialOffsetY),
 		offsetX:        float64(-w),
 		offsetY:        0,
@@ -59,13 +62,28 @@ func (d *duck) Update(screen *ebiten.Image, _ uint) {
 		d.yDirection = d.yDirection.invert()
 	}
 	d.offsetY = d.offsetY + float64(d.yDirection)*ducksYSpeed
+
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		clickX, clickY := ebiten.CursorPosition()
+
+		x := int(d.offsetX)
+		y := int(d.offsetY + d.initialOffsetY)
+
+		// Approximate the duck to its rectangle, though there're transparent
+		// pixels. For better results we can either approximate the duck to other
+		// shapes (like a rectangle+circle) or use image.At() to understand
+		// if a transparent pixel was hit
+		if clickX >= x && clickX <= x+d.w && clickY >= y && clickY <= y+d.h {
+			d.onScreen = false
+		}
+
+	}
 }
 
 func (d *duck) Draw(trgt *ebiten.Image) error {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(d.offsetX, d.offsetY+d.initialOffsetY)
 	trgt.DrawImage(d.img, op)
-
 	return nil
 }
 

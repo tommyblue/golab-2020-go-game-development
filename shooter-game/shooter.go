@@ -49,9 +49,10 @@ func NewGame() *Game {
 	g := &Game{
 		objects: []objects.Object{
 			objects.NewBackground("bg_green.png"),
-			objects.NewLevel1("water1.png", 4),
+			objects.NewLevel1("water1.png", "duck_outline_target_white.png", 4),
 			objects.NewDesk("bg_wood.png"),
 			objects.NewCurtains("curtain_straight.png", "curtain.png"),
+			objects.NewCrosshair("crosshair_white_large.png", "crosshair_red_large.png"),
 		},
 	}
 	return g
