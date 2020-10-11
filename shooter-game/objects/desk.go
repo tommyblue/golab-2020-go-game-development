@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"fmt"
 	"image/color"
+	"log"
 	"math"
 
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/assets"
@@ -11,12 +11,22 @@ import (
 )
 
 type desk struct {
-	name string
+	img *ebiten.Image
+	w   float64
+	h   float64
 }
 
-func NewDesk(img string) Object {
+func NewDesk(imgName string) Object {
+	img, err := utils.GetImage(imgName, assets.Stall)
+	if err != nil {
+		log.Fatalf("drawing %s: %v", imgName, err)
+	}
+	w, h := img.Size()
+
 	return &desk{
-		name: img,
+		img: img,
+		w:   float64(w),
+		h:   float64(h),
 	}
 }
 
@@ -33,18 +43,14 @@ func (d *desk) Draw(trgt *ebiten.Image) error {
 	op.GeoM.Translate(0, float64(trgtH-borderH-deskH))
 	trgt.DrawImage(border, op)
 
-	deskBg, err := utils.GetImage(d.name, assets.Stall)
-	if err != nil {
-		return fmt.Errorf("drawing %s: %v", d.name, err)
-	}
-	deskW, _ := deskBg.Size()
-
-	x := int(math.Ceil(float64(trgtW) / float64(deskW)))
-	for i := 0; i < x; i++ {
-		tx := i * deskW
+	x := math.Ceil(float64(trgtW) / d.w)
+	var i float64
+	for i < x {
+		tx := i * d.w
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(tx), float64(trgtH-deskH))
-		trgt.DrawImage(deskBg, op)
+		op.GeoM.Translate(tx, float64(trgtH-deskH))
+		trgt.DrawImage(d.img, op)
+		i++
 	}
 
 	return nil
