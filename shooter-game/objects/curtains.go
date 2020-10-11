@@ -22,7 +22,7 @@ func NewCurtains(top, lateral string) Object {
 	}
 }
 
-func (c *curtains) Tick(_ uint) {}
+func (c *curtains) Tick(_ *ebiten.Image, _ uint) {}
 
 func (c *curtains) Draw(trgt *ebiten.Image) error {
 	img, err := utils.GetImage(c.lateral, assets.Stall)
@@ -60,4 +60,8 @@ func (c *curtains) Draw(trgt *ebiten.Image) error {
 	}
 
 	return nil
+}
+
+func (c *curtains) OnScreen() bool {
+	return true
 }

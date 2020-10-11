@@ -25,7 +25,7 @@ func (g *Game) Update(screen *ebiten.Image) error {
 	}
 
 	for _, o := range g.objects {
-		o.Tick(g.tick)
+		o.Tick(screen, g.tick)
 	}
 
 	return nil
@@ -49,7 +49,7 @@ func NewGame() *Game {
 	g := &Game{
 		objects: []objects.Object{
 			objects.NewBackground("bg_green.png"),
-			objects.NewLevel1("water1.png"),
+			objects.NewLevel1("water1.png", 4),
 			objects.NewDesk("bg_wood.png"),
 			objects.NewCurtains("curtain_straight.png", "curtain.png"),
 		},

@@ -20,7 +20,7 @@ func NewDesk(img string) Object {
 	}
 }
 
-func (d *desk) Tick(_ uint) {}
+func (d *desk) Tick(_ *ebiten.Image, _ uint) {}
 
 func (d *desk) Draw(trgt *ebiten.Image) error {
 	trgtW, trgtH := trgt.Size()
@@ -48,4 +48,8 @@ func (d *desk) Draw(trgt *ebiten.Image) error {
 	}
 
 	return nil
+}
+
+func (d *desk) OnScreen() bool {
+	return true
 }
