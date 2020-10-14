@@ -62,22 +62,22 @@ func (d *duck) Update(screen *ebiten.Image, _ uint) {
 		d.yDirection = d.yDirection.invert()
 	}
 	d.offsetY = d.offsetY + float64(d.yDirection)*ducksYSpeed
+}
 
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-		clickX, clickY := ebiten.CursorPosition()
+func (d *duck) shoot(clickX, clickY int) bool {
+	x := int(d.offsetX)
+	y := int(d.offsetY + d.initialOffsetY)
 
-		x := int(d.offsetX)
-		y := int(d.offsetY + d.initialOffsetY)
-
-		// Approximate the duck to its rectangle, though there're transparent
-		// pixels. For better results we can either approximate the duck to other
-		// shapes (like a rectangle+circle) or use image.At() to understand
-		// if a transparent pixel was hit
-		if clickX >= x && clickX <= x+d.w && clickY >= y && clickY <= y+d.h {
-			d.onScreen = false
-		}
-
+	// Approximate the duck to its rectangle, though there're transparent
+	// pixels. For better results we can either approximate the duck to other
+	// shapes (like a rectangle+circle) or use image.At() to understand
+	// if a transparent pixel was hit
+	if clickX >= x && clickX <= x+d.w && clickY >= y && clickY <= y+d.h {
+		d.onScreen = false
+		return true
 	}
+
+	return false
 }
 
 func (d *duck) Draw(trgt *ebiten.Image) error {

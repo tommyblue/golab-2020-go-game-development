@@ -16,6 +16,7 @@ const (
 type Game struct {
 	tick    uint
 	objects []objects.Object
+	score   *int64
 }
 
 func (g *Game) Update(screen *ebiten.Image) error {
@@ -46,14 +47,17 @@ func (g *Game) Layout(w, h int) (int, int) {
 func NewGame() *Game {
 	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowTitle("Shooter")
+	var score int64 = 0
 	g := &Game{
-		objects: []objects.Object{
-			objects.NewBackground("bg_green.png"),
-			objects.NewLevel1("water1.png", "duck_outline_target_white.png", 4),
-			objects.NewDesk("bg_wood.png"),
-			objects.NewCurtains("curtain_straight.png", "curtain.png"),
-			objects.NewCrosshair("crosshair_white_large.png", "crosshair_red_large.png"),
-		},
+		score: &score,
+	}
+	g.objects = []objects.Object{
+		objects.NewBackground("bg_green.png"),
+		objects.NewLevel1("water1.png", "duck_outline_target_white.png", 4, &score),
+		objects.NewDesk("bg_wood.png"),
+		objects.NewCurtains("curtain_straight.png", "curtain.png"),
+		objects.NewCrosshair("crosshair_white_large.png", "crosshair_red_large.png"),
+		objects.NewScore("text_score_small.png", "text_dots_small.png", "text_$_small.png", &score),
 	}
 	return g
 }

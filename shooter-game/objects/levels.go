@@ -4,6 +4,8 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"sync/atomic"
+	"time"
 
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/assets"
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/utils"
@@ -21,6 +23,8 @@ type level1 struct {
 	ducks       []*duck       // current number of ducks in the screen
 	maxDucks    int           // max number of ducks in the screen
 	duckImgName string        // the name of the duck img
+	score       *int64
+	lastClick   time.Time
 }
 
 const (
@@ -30,7 +34,7 @@ const (
 	lvl1MaxOffsetY = 16   // max vertical movement
 )
 
-func NewLevel1(imgName, duckImgName string, maxDucks int) Object {
+func NewLevel1(imgName, duckImgName string, maxDucks int, score *int64) Object {
 	img, err := utils.GetImage(imgName, assets.Stall)
 	if err != nil {
 		log.Fatalf("cannot get image %s: %v", imgName, err)
@@ -45,6 +49,7 @@ func NewLevel1(imgName, duckImgName string, maxDucks int) Object {
 		yDirection:  down,
 		maxDucks:    maxDucks,
 		duckImgName: duckImgName,
+		score:       score,
 	}
 }
 
@@ -65,14 +70,32 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	// the loop we reduce the slice to the final lenght
 	// https://github.com/golang/go/wiki/SliceTricks#filter-in-place
 	n := 0
+	var hit bool
+	clicked := ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)
 	for _, d := range l.ducks {
 		d.Update(trgt, tick)
+		// calculate whether the duck has been hit
+		if clicked && l.isClickValid() {
+			x, y := ebiten.CursorPosition()
+			if d.shoot(x, y) {
+				hit = true
+			}
+		}
+
 		if d.onScreen {
 			l.ducks[n] = d
 			n++
 		}
 	}
 	l.ducks = l.ducks[:n]
+
+	// Increment/decrement score
+	currentScore := atomic.LoadInt64(l.score)
+	if clicked && hit {
+		atomic.StoreInt64(l.score, currentScore+10)
+	} else if clicked && len(l.ducks) > 0 && currentScore >= 5 {
+		atomic.StoreInt64(l.score, currentScore-5)
+	}
 
 	// Calculate the horizontal offset of the image.
 	// First the direction:
@@ -123,4 +146,12 @@ func (l *level1) Draw(trgt *ebiten.Image) error {
 
 func (l *level1) OnScreen() bool {
 	return true
+}
+
+// Don't accept duplicated clicks
+func (l *level1) isClickValid() bool {
+	now := time.Now()
+	valid := now.Sub(l.lastClick) > 200*time.Millisecond
+	l.lastClick = now
+	return valid
 }
