@@ -10,21 +10,25 @@ import (
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/assets"
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/utils"
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/audio"
 )
 
 type level1 struct {
-	img         *ebiten.Image // level image (water waves)
-	imgW        int           // width of the image
-	imgH        int           // height of the image
-	offsetX     float64       // horizontal offset, used to animate the image
-	offsetY     float64       // vertical offset, used to animate the image
-	xDirection  direction     // horizontal direction of the animation
-	yDirection  direction     // vertical direction of the animation
-	ducks       []*duck       // current number of ducks in the screen
-	maxDucks    int           // max number of ducks in the screen
-	duckImgName string        // the name of the duck img
-	score       *int64
-	lastClick   time.Time
+	img          *ebiten.Image // level image (water waves)
+	imgW         int           // width of the image
+	imgH         int           // height of the image
+	offsetX      float64       // horizontal offset, used to animate the image
+	offsetY      float64       // vertical offset, used to animate the image
+	xDirection   direction     // horizontal direction of the animation
+	yDirection   direction     // vertical direction of the animation
+	ducks        []*duck       // current number of ducks in the screen
+	maxDucks     int           // max number of ducks in the screen
+	duckImgName  string        // the name of the duck img
+	score        *int64
+	lastClick    time.Time
+	audioContext *audio.Context
+	hitSound     *audio.Player
+	missSound    *audio.Player
 }
 
 const (
@@ -50,6 +54,8 @@ func NewLevel1(imgName, duckImgName string, maxDucks int, score *int64) Object {
 		maxDucks:    maxDucks,
 		duckImgName: duckImgName,
 		score:       score,
+		hitSound:    assets.LoadWavPlayer(assets.HitSound),
+		missSound:   assets.LoadWavPlayer(assets.MissSound),
 	}
 }
 
@@ -93,8 +99,12 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	currentScore := atomic.LoadInt64(l.score)
 	if clicked && hit {
 		atomic.StoreInt64(l.score, currentScore+10)
+		l.hitSound.Rewind()
+		l.hitSound.Play()
 	} else if clicked && len(l.ducks) > 0 && currentScore >= 5 {
 		atomic.StoreInt64(l.score, currentScore-5)
+		l.missSound.Rewind()
+		l.missSound.Play()
 	}
 
 	// Calculate the horizontal offset of the image.

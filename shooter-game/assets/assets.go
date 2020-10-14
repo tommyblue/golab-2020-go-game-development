@@ -5,18 +5,23 @@ import (
 	"encoding/json"
 	"image"
 	_ "image/png"
+	"io"
 	"io/ioutil"
 	"log"
 	"path"
 	"runtime"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/audio"
+	"github.com/hajimehoshi/ebiten/audio/vorbis"
+	"github.com/hajimehoshi/ebiten/audio/wav"
 )
 
 var (
-	Hud     *Object
-	Objects *Object
-	Stall   *Object
+	Hud          *Object
+	Objects      *Object
+	Stall        *Object
+	audioContext *audio.Context
 )
 
 type Object struct {
@@ -52,6 +57,11 @@ func init() {
 		Image: newImage(stallBytes),
 		Specs: buildSpecs(relativePath("./stall.json")),
 	}
+	var err error
+	audioContext, err = audio.NewContext(44100)
+	if err != nil {
+		log.Fatalf("cannot initialize sound context: %v", err)
+	}
 }
 
 func newImage(src []byte) *ebiten.Image {
@@ -84,4 +94,44 @@ func relativePath(filepath string) string {
 		log.Fatal("relativePath error")
 	}
 	return path.Join(path.Dir(filename), filepath)
+}
+
+func LoadWavPlayer(src []byte) *audio.Player {
+	s, err := wav.Decode(audioContext, audio.BytesReadSeekCloser(src))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return loadPlayer(s)
+}
+
+func LoadOggPlayer(src []byte) *audio.Player {
+	s, err := vorbis.Decode(audioContext, audio.BytesReadSeekCloser(src))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return loadPlayer(s)
+}
+
+func loadPlayer(sound io.ReadCloser) *audio.Player {
+	p, err := audio.NewPlayer(audioContext, sound)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return p
+}
+
+func BackgroundMusicPlayer() (*audio.Player, error) {
+	oggS, err := vorbis.Decode(audioContext, audio.BytesReadSeekCloser(RagtimeSound))
+	if err != nil {
+		return nil, err
+	}
+	s := audio.NewInfiniteLoop(oggS, oggS.Length())
+
+	player, err := audio.NewPlayer(audioContext, s)
+	if err != nil {
+		return nil, err
+	}
+
+	return player, nil
 }

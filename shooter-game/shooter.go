@@ -3,6 +3,7 @@ package shooter
 import (
 	"log"
 
+	"github.com/develersrl/golab2020-go-game-dev/shooter-game/assets"
 	"github.com/develersrl/golab2020-go-game-dev/shooter-game/objects"
 	"github.com/hajimehoshi/ebiten"
 )
@@ -63,5 +64,11 @@ func NewGame() *Game {
 }
 
 func (g *Game) Run() error {
+	player, err := assets.BackgroundMusicPlayer()
+	if err != nil {
+		return err
+	}
+	player.Play()
+
 	return ebiten.RunGame(g)
 }
