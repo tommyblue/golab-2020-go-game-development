@@ -50,10 +50,8 @@ func (g *Game) Update(screen *ebiten.Image) error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// calculate frame to show
-	frameNum := int(g.tick*g.speed/10) % g.numFrames
+	frameNum := int(g.tick/g.speed) % g.numFrames
 	frame := g.frames[frameNum]
-
 	// select the frame in the tileset image
 	subImg := coins.SubImage(image.Rect(frame.X, frame.Y, frame.X+frame.W, frame.H)).(*ebiten.Image)
 
@@ -97,7 +95,7 @@ func main() {
 	ebiten.SetWindowTitle("Draw tiles with different sizes")
 
 	g := &Game{
-		speed: 2,
+		speed: 60 / 12,
 	}
 
 	if err := g.buildFrames(os.Args[1]); err != nil {
