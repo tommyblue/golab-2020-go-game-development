@@ -42,7 +42,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 
 	// calculate frame to show
-	frameNum := int(g.tick*g.speed/10) % numFrames
+	frameNum := int(g.tick/g.speed) % numFrames
 	// as the images in the tilesheet have all the same size
 	// we just move right the number of current frame * width of the image
 	frameX := frameNum * imgSize
@@ -62,7 +62,7 @@ func main() {
 	ebiten.SetWindowTitle("Draw tiles")
 
 	g := &Game{
-		speed: 1.5,
+		speed: 60 / 6,
 	}
 
 	if err := ebiten.RunGame(g); err != nil {
