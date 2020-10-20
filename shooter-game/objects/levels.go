@@ -62,9 +62,9 @@ func NewLevel1(imgName, duckImgName string, maxDucks int, score *int64) Object {
 func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	// if the current number of ducks is below the expected number, maybe generate one
 	if len(l.ducks) < l.maxDucks {
-		// every second there's 30% possibilities to
+		// every second there's 40% possibilities to
 		// generate a missing duck
-		if tick%60 == 0 && rand.Float64() < 0.3 {
+		if tick%60 == 0 && rand.Float64() < 0.4 {
 			l.ducks = append(l.ducks, newDuck(l.duckImgName, l.imgH+50))
 		}
 	}
@@ -77,11 +77,11 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 	// https://github.com/golang/go/wiki/SliceTricks#filter-in-place
 	n := 0
 	var hit bool
-	clicked := ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)
+	clicked := ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && l.isClickValid()
 	for _, d := range l.ducks {
 		d.Update(trgt, tick)
 		// calculate whether the duck has been hit
-		if clicked && l.isClickValid() {
+		if clicked {
 			x, y := ebiten.CursorPosition()
 			if d.shoot(x, y) {
 				hit = true
@@ -94,7 +94,6 @@ func (l *level1) Update(trgt *ebiten.Image, tick uint) {
 		}
 	}
 	l.ducks = l.ducks[:n]
-
 	// Increment/decrement score
 	currentScore := atomic.LoadInt64(l.score)
 	if clicked && hit {
@@ -161,7 +160,9 @@ func (l *level1) OnScreen() bool {
 // Don't accept duplicated clicks
 func (l *level1) isClickValid() bool {
 	now := time.Now()
-	valid := now.Sub(l.lastClick) > 200*time.Millisecond
-	l.lastClick = now
-	return valid
+	if now.Sub(l.lastClick) > 200*time.Millisecond {
+		l.lastClick = now
+		return true
+	}
+	return false
 }
