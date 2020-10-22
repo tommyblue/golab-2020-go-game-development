@@ -9,6 +9,8 @@ This workshop was aimed at Go beginners that wanted to start exploring
 the language not writing the classic ToDo API app but a "simple" 2D game
 using the [Ebiten library](https://ebiten.org/).
 
+Slides are [here](./Slides.pdf)
+
 ## Requirements
 
 You must be able to run the [Hello World](https://ebiten.org/tour/hello_world.html)
